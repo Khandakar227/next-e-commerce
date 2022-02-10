@@ -17,7 +17,7 @@ const useOrders = () => {
             const orders = doc.data().orders;
             console.log(orders);
             if (orders) {
-              db.collection("Orders")
+              db.collection("Orders").where('user_id', '==', auth.currentUser.uid)
                 .get()
                 .then(function (querySnapshot) {
                   const ordersArray = querySnapshot.docs

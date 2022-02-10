@@ -1,4 +1,5 @@
 import { auth, db } from "../config/firebase";
+import { sendEmailVerification } from 'firebase/auth'
 
 function emailRegister({ email, password }) {
   return auth.createUserWithEmailAndPassword(email, password);
@@ -18,4 +19,12 @@ function registerDatabase({ id, email, name, surname }) {
   });
 }
 
-export { emailRegister, registerDatabase };
+/**
+ * @param {import("firebase/auth").User} user
+ */
+async function sendVerificationLink(user) {
+  await sendEmailVerification(user);
+  return "Almost done. You need to verify your email. A verification link was sent to your email.";
+}
+
+export { emailRegister, registerDatabase, sendVerificationLink };

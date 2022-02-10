@@ -1,0 +1,30 @@
+.container {
+  padding: 1rem 5px;
+}
+.button {
+  border-radius: 7px;
+  padding: 10px 12px;
+  text-align: center;
+  cursor: pointer;
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #dc3545;
+}
+.button:hover {
+  background-color: #bb2d3b;
+  border-color: #b02a37;
+}
+.svg {
+  width: 100%;
+  padding: 10px 0;
+}
+.h3 {
+  padding: 1.5rem 0;
+}
+.main {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  min-height: 80vh;
+  text-align: center;
+}

@@ -8,27 +8,19 @@ const useAddresses = () => {
 
   useEffect(() => {
     async function fetchFromFirestore() {
-      auth.currentUser &&
-        db
-          .collection("Users")
-          .doc(auth.currentUser.uid)
-          .get()
-          .then(function (doc) {
-            const addresses = doc.data().addresses;
-            if (addresses) {
-              db.collection("Addresses")
-                .get()
-                .then(function (querySnapshot) {
-                  const addressArray = querySnapshot.docs
-                    .filter((doc) => addresses.includes(doc.id))
-                    .map(function (doc) {
-                      return { id: doc.id, ...doc.data() };
-                    });
-                  setData(addressArray);
-                  setLoading(false);
-                });
-            }
-          });
+      try {
+        if (!auth.currentUser) return //If not logged in return null
+        const query = db.collection('Addresses').where('user_id', '==', auth.currentUser.uid);   //Make firebase query
+        const { docs } = await query.get();  //Telling firebase to look from the cache first
+        const data = docs.map((doc) => ({ ...doc.data(), id: doc.id }));  // get the address with data and doc id 
+        setData(data);
+      } catch (error) {
+        console.log(error);
+        setError(error);
+
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchFromFirestore();
@@ -41,23 +33,26 @@ const useAddresses = () => {
   };
 };
 
-const useAddress = (id) => {
+const useAddress = (user_id) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchFromFirestore() {
-      auth.currentUser &&
-        db
-          .collection("Addresses")
-          .doc(id)
-          .get()
-          .then(function (doc) {
-            setData(doc.data());
-            setLoading(false);
-          })
-          .catch((e) => setError(e));
+      try {
+        if (!auth.currentUser) return
+        const query = db.collection('Addresses').where('user_id', '==', user_id);
+        const { docs } = await query.get({ source: 'cache' });
+        setData({ ...docs[0].data(), id: docs[0].id })
+
+      } catch (error) {
+        console.log(error);
+        setError(error);
+
+      } finally {
+        setLoading(false)
+      }
     }
 
     fetchFromFirestore();

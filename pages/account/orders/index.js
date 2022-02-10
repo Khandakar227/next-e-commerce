@@ -23,7 +23,7 @@ export default function Orders() {
         <h1 className={styles.title}>My Orders</h1>
         <div className={styles.content}>
           {data?.length === 0 ? (
-            <span>You have not any order</span>
+            <span>It seems you have not ordered anything</span>
           ) : (
             <div className={styles.orders}>
               {data?.map((item) => {

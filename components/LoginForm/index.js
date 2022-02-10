@@ -9,6 +9,7 @@ import Link from "next/link";
 import SocialMediaButton from "@/components/SocialMediaButton";
 import emailLogin from "@/firebase/login";
 import googleAuth from "@/firebase/google-auth";
+import nProgress from "nprogress";
 
 const schema = yup.object().shape({
   email: yup.string().email().required("* Email is required."),
@@ -26,10 +27,15 @@ export default function LoginForm() {
   });
 
   const onSubmit = (data) => {
-    emailLogin({ email: data.email, password: data.password }).catch((e) =>
-      setLoginError(e.message)
-    );
+    nProgress.start()
+    emailLogin({ email: data.email, password: data.password })
+    .catch((e) => {
+      setLoginError(e.message);
+      nProgress.done();
+    });
+    nProgress.done();
   };
+  
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}

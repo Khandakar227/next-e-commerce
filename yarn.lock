@@ -477,9 +477,9 @@
   "version" "17.0.15"
 
 "ansi-regex@^5.0.0":
-  "integrity" "sha512-bY6fj56OUQ0hU1KjFNDQuJFezqKdrAyFdIevADiqrWHwSlbmBNMHp5ak2f40Pm8JTFyM2mqxkG6ngkHO11f/lg=="
-  "resolved" "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.0.tgz"
-  "version" "5.0.0"
+  "integrity" "sha512-quJQXlTSUGL2LH9SUXo8VwsY4soanhgo6LNSm84E1LBcE8s3O0wpdiRzyR9z/ZZJMlMWv37qOOb9pdJlMUEKFQ=="
+  "resolved" "https://registry.npmjs.org/ansi-regex/-/ansi-regex-5.0.1.tgz"
+  "version" "5.0.1"
 
 "ansi-styles@^4.0.0":
   "integrity" "sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg=="
@@ -929,7 +929,12 @@
   "resolved" "https://registry.npmjs.org/react-hook-form/-/react-hook-form-7.26.0.tgz"
   "version" "7.26.0"
 
-"react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^17.0.2 || ^18.0.0-0", "react@>= 16.8.0 || 17.x.x || 18.x.x", "react@17.0.2":
+"react-loading-skeleton@^3.0.2":
+  "integrity" "sha512-rlALwuZEcjazUDeIy3+fEhm20Uk9Yd/zZGeITU034K2ts5/yEf7RuZaV2FyrPWypIII4LAsFEo9WDTPKp6G0fQ=="
+  "resolved" "https://registry.npmjs.org/react-loading-skeleton/-/react-loading-skeleton-3.0.2.tgz"
+  "version" "3.0.2"
+
+"react@^16.8.0 || ^17", "react@^16.8.0 || ^17.0.0", "react@^17.0.2 || ^18.0.0-0", "react@>= 16.8.0 || 17.x.x || 18.x.x", "react@>=16.8.0", "react@17.0.2":
   "integrity" "sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA=="
   "resolved" "https://registry.npmjs.org/react/-/react-17.0.2.tgz"
   "version" "17.0.2"

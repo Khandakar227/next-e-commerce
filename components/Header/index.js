@@ -11,6 +11,7 @@ import { useAuth } from "@/firebase/context";
 import { useCart } from "hooks/cart.hook";
 import { useRouter } from "next/router";
 import MenuIcon from "@/icons/menu";
+import Loading from "@/icons/Loading";
 
 export default function Header() {
   const [showHeader, setShowHeader] = useState({
@@ -19,7 +20,7 @@ export default function Header() {
 
   const router = useRouter();
 
-  const { user } = useAuth();
+  const { user, loading } = useAuth();
 
   const cart = useCart().data;
   const cartLength = Object.keys(cart).reduce((a, b) => a + cart[b].length, 0);
@@ -112,17 +113,22 @@ export default function Header() {
 
         <Link href="/account">
           <div className={styles.profileContainer}>
-            <img
-              src={user?.photoUrl || "https://picsum.photos/200/200"}
-              className={styles.profilePhoto}
-              loading="lazy"
-            />
-            <span>
-              Hello{" "}
-              <span style={{ fontWeight: "normal" }}>
-                {user?.name || "Guest"}
-              </span>
-            </span>
+            {
+              loading ? <Loading stroke="#000" speed="1.3" /> :
+                <>
+                  <img
+                    src={user?.photoUrl || "https://picsum.photos/200/200"}
+                    className={styles.profilePhoto}
+                    loading="lazy"
+                  />
+                  <span>
+                    Hello{" "}
+                    <span style={{ fontWeight: "normal" }}>
+                      {user?.name || "Guest"}
+                    </span>
+                  </span>
+                </>
+            }
             <ArrowIcon width={10} height={10} className={styles.arrowIcon} />
             <div className={styles.dropdown}>
               <div className={styles.arrowUp} />

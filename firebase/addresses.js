@@ -3,24 +3,20 @@ import { auth, db, firebase } from "../config/firebase";
 const addAddress = ({ title, city, region, zipcode, full_address }) => {
   db.collection("Addresses")
     .add({
+      user_id: auth.currentUser.uid,
       title,
       city,
       region,
       zipcode,
       full_address,
     })
-    .then((doc) => {
-      db.collection("Users")
-        .doc(auth.currentUser.uid)
-        .update({
-          addresses: firebase.firestore.FieldValue.arrayUnion(doc.id),
-        })
-        .finally(() => window.location.reload(false)); // reload page
-    });
+    .finally(() => window.location.reload(false)); // reload page
 };
 
-const updateAddress = ({ id, title, city, region, zipcode, full_address }) => {
-  return db.collection("Addresses").doc(id).update({
+const updateAddress = ({ address_id, title, city, region, zipcode, full_address }) => {
+  console.log({address_id, title, city, region, zipcode, full_address});
+
+  return db.collection("Addresses").doc(address_id).update({
     title,
     city,
     region,
@@ -29,19 +25,12 @@ const updateAddress = ({ id, title, city, region, zipcode, full_address }) => {
   });
 };
 
-const deleteAddress = ({ id }) => {
-  return db
+const deleteAddress = async ({ address_id }) => {
+  await db
     .collection("Addresses")
-    .doc(id)
+    .doc(address_id)
     .delete()
-    .then(() => {
-      db.collection("Users")
-        .doc(auth.currentUser.uid)
-        .update({
-          addresses: firebase.firestore.FieldValue.arrayRemove(id),
-        })
-        .finally(() => window.location.reload(false)); // reload page
-    });
+    .finally(() => window.location.reload(false)); // reload page
 };
 
 export { addAddress, updateAddress, deleteAddress };

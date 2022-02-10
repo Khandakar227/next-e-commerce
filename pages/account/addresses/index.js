@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 
 import AccountSidebar from "@/components/AccountSidebar";
 import Layout from "@/components/Layout";
 import AddressCard from "@/components/AddressCard";
-import AddAddress from "./add-address";
+import AddAddress from "@/components/AddAddress";
 
 import styles from "./address.module.scss";
 import { useAuth } from "@/firebase/context";
@@ -13,12 +13,18 @@ import { useRouter } from "next/router";
 export default function Addresses() {
   const [toggleModal, setModal] = useState(false);
 
-  const { user } = useAuth();
-  const userLoading = useAuth().loading;
-
+  const { user, loading: userLoading } = useAuth();
   const { data, loading } = useAddresses();
-
+  
   if (!user && !userLoading) useRouter().push("/login");
+
+  function addNewAddress () {
+    if (user?.emailVerified) {
+      setModal(true)
+    } else {
+      alert("You have not yet verified your email please verify your email")
+    }
+  }
 
   return (
     <Layout noCategories>
@@ -30,10 +36,10 @@ export default function Addresses() {
             <span>Loading...</span>
           ) : data.length === 0 ? (
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <p>You have not any address</p>
+              <p>You have not set any address</p>
               <button
                 className={styles.addAddress}
-                onClick={() => setModal(true)}
+                onClick={() => addNewAddress()}
               >
                 <p>+</p>Add New Address
               </button>
@@ -42,12 +48,12 @@ export default function Addresses() {
             <div className={styles.addresses}>
               <button
                 className={styles.addAddress}
-                onClick={() => setModal(true)}
+                onClick={() => addNewAddress()}
               >
                 <p>+</p>Add New Address
               </button>
-              {data?.map((item) => {
-                return <AddressCard data={item} />;
+              {data?.map((item, i) => {
+                return <AddressCard key={`${i}. Address`} data={item} />;
               })}
             </div>
           )}

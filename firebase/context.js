@@ -17,13 +17,26 @@ function useProvideAuth() {
   const getCurrentUser = () => {
     auth.currentUser?.uid
       ? db
-          .collection("Users")
-          .doc(auth.currentUser.uid)
-          .get()
-          .then((doc) => {
-            setUser(doc.data());
-            setLoading(false);
+        .collection("Users")
+        .doc(auth.currentUser.uid)
+        .get()
+        .then((doc) => {
+          const userData = {
+            emailVerified: auth.currentUser.emailVerified,
+            uid: auth.currentUser.uid,
+            ...doc.data()
+          }
+
+          Object.defineProperty(userData, 'emailVerified', {
+            value: auth.currentUser.emailVerified
           })
+          Object.defineProperty(userData, 'uid', {
+            value: auth.currentUser.uid
+          })
+
+          setUser(userData);
+          setLoading(false);
+        })
       : setLoading(false);
   };
 

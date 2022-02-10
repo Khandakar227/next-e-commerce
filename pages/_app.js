@@ -5,12 +5,13 @@ import 'nprogress/nprogress.css'
 import "@/styles/globals.css";
 
 import { AuthProvider } from "../firebase/context";
+import AuthRoute from "@/components/AuthRoute";
 
 function MyApp({ Component, pageProps }) {
 
   useEffect(() => { //UseEffect hook required to make sure that this code does not run on the server
 
-    Nprogress.configure({minimum: 0.17})
+    Nprogress.configure({ minimum: 0.17 })
 
     Router.events.on('routeChangeStart', Nprogress.start) // Starts the progress bar
     Router.events.on('routeChangeError', Nprogress.done)  // Finishes the progress bar
@@ -19,7 +20,9 @@ function MyApp({ Component, pageProps }) {
 
   return (
     <AuthProvider>
-      <Component {...pageProps} />
+      <AuthRoute>
+        <Component {...pageProps} />
+      </AuthRoute>
     </AuthProvider>
   );
 }

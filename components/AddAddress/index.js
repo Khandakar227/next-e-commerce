@@ -19,7 +19,7 @@ const schema = yup.object().shape({
     .required("* City is required.")
     .min(2, "* City is too short"),
   region: yup.string().required("* Region is required."),
-  zipcode: yup.string().required("* Zip Code is required."),
+  zipcode: yup.string().notRequired().default(""),
   full_address: yup.string().required("* Address Line is required."),
 });
 

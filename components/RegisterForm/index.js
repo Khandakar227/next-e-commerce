@@ -6,8 +6,11 @@ import * as yup from "yup";
 import Input from "@/components/Input";
 import Button from "@/components/Button";
 import SocialMediaButton from "@/components/SocialMediaButton";
-import { emailRegister, registerDatabase } from "@/firebase/register";
+import { emailRegister, registerDatabase, sendVerificationLink } from "@/firebase/register";
 import googleAuth from "@/firebase/google-auth";
+import nProgress from "nprogress";
+// import { useRouter } from "next/router";
+
 
 const schema = yup.object().shape({
   name: yup
@@ -27,31 +30,35 @@ const schema = yup.object().shape({
 
 export default function RegisterForm() {
   const [registerError, setRegisterError] = useState();
-  const { register, handleSubmit, watch, formState: {errors} } = useForm({
+  // const router = useRouter()
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
-  const onSubmit = ({ email, password, name, surname }) =>
-    emailRegister({ email, password })
-      .then((response) => {
-        registerDatabase({
-          id: response.user.uid,
-          email,
-          name,
-          surname,
+
+  const onSubmit = async ({ email, password, name, surname }) => {
+    try {
+      nProgress.start();
+      const response = await emailRegister({ email, password })
+
+      if (response) {
+        await registerDatabase({
+          id: response.user.uid, email, name, surname,
         })
-          .then(() =>
-            setRegisterError(
-              "You have registered succesfully. You can login now"
-            )
-          )
-          .catch((e) => setRegisterError(e.message));
-      })
-      .catch((error) => setRegisterError(error.message));
+        setRegisterError("You have registered succesfully. You can login now")
+        await sendVerificationLink(response.user) //Send an email verification link to verify whether the email belongs to him.
+        nProgress.done();
+      }
+
+    } catch (error) {
+      setRegisterError(error.message)
+      nProgress.done();
+    }
+  }
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      style={{ display: "flex", flexDirection: "column", paddingTop: 30 }}
+      style={{ display: "flex", flexDirection: "column", paddingTop: 30, maxWidth: "800px", margin: "0 auto" }}
     >
       {/*   Social Media Buttons  */}
       <hr style={{ width: "100%", height: 1, color: "#f6f6f655" }} />

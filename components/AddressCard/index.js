@@ -7,7 +7,7 @@ import { deleteAddress } from "@/firebase/addresses";
 
 export default function AddressCard({ data }) {
   const [toggleModal, setModal] = useState(false);
-  const { id, title, full_address, zipcode, region, city } = data;
+  const { user_id, id, title, full_address, zipcode, region, city } = data;
 
   return (
     <div className={styles.container}>
@@ -21,7 +21,7 @@ export default function AddressCard({ data }) {
         <p>{region || "Region"}</p>
       </div>
       <div className={styles.buttons}>
-        <button className={styles.delete} onClick={() => deleteAddress({ id })}>
+        <button className={styles.delete} onClick={() => deleteAddress({ address_id:id })}>
           Delete
         </button>
         <button className={styles.update} onClick={() => setModal(true)}>

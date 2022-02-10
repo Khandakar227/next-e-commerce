@@ -1,23 +1,12 @@
 import React, { useState } from "react";
-import { useRouter } from "next/router";
 
 import styles from "./login.module.scss";
-import LoginForm from "./login-form";
-import RegisterForm from "./register-form";
-import { auth } from "../../config/firebase";
+import LoginForm from "@/components/LoginForm";
+import RegisterForm from "@/components/RegisterForm";
 import Link from "next/link";
 
 export default function LoginPage() {
   const [page, setPage] = useState("login");
-
-  const router = useRouter();
-
-  auth.onAuthStateChanged(function (user) {
-    if (user) {
-      console.log(user);
-      typeof window !== "undefined" && router.push("/");
-    }
-  });
 
   return (
     <div className={styles.container}>

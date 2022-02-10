@@ -9,6 +9,7 @@ import Input from "@/components/Input";
 import Button from "@/components/Button";
 
 import { updateAddress } from "@/firebase/addresses";
+import nProgress from "nprogress";
 
 const schema = yup.object().shape({
   title: yup
@@ -27,12 +28,19 @@ const schema = yup.object().shape({
 export default function UpdateAddress({ addressData, closeEvent }) {
   const { id, title, full_address, zipcode, region, city } = addressData;
 
-  const { register, handleSubmit, errors } = useForm({
+  const { register, handleSubmit, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
 
-  const onSubmit = (data) =>
-    updateAddress({ id, ...data }).finally(() => window.location.reload(false));
+  const onSubmit = (data) => {
+    nProgress.start();
+    updateAddress({ address_id: id, ...data })
+    .then(() => window.location.reload(false))
+    .catch(err => {
+      console.log(err)
+      nProgress.done()
+    });
+  }
 
   const closeModal = (target) => {
     target?.id === "container" && closeEvent();
