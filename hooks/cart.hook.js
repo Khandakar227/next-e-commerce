@@ -8,13 +8,23 @@ const useCart = (id) => {
 
   useEffect(() => {
     async function fetchFromFirestore() {
-      auth.currentUser &&
-        db
-          .collection("Users")
-          .doc(auth.currentUser?.uid)
-          .onSnapshot(function (doc) {
-            setData(doc.data().cart);
-          });
+      try {
+        if (auth.currentUser?.uid) {
+          console.log(auth.currentUser)
+          db.collection("Users")
+            .doc(auth.currentUser?.uid)
+            .onSnapshot(function (doc) {
+              setData(doc.data().cart);
+            });
+          console.log(data)
+        };
+
+      } catch (error) {
+        setError(error.message)
+      }
+      finally {
+        setLoading(false);
+      }
     }
 
     fetchFromFirestore();

@@ -47,18 +47,19 @@ const schema2 = yup.object().shape({
 });
 
 export default function AccountPage() {
+  const { user, loading } = useAuth();
   const [passwordError, setError] = useState(null);
   const [photo, setPhoto] = useState(null);
-  const { user, loading } = useAuth();
+  const router = useRouter();
 
-  const { register, handleSubmit, watch, formState:{errors} } = useForm({
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
     resolver: yupResolver(schema),
   });
 
   const {
     register: register2,
     handleSubmit: handleSubmit2,
-    formState:{errors: errors2},
+    formState: { errors: errors2 },
     getValues,
   } = useForm({
     resolver: yupResolver(schema2),
@@ -81,13 +82,16 @@ export default function AccountPage() {
     reauth()
       .then(() =>
         update()
-          .then(() => setError("Password Changed!"))
+          .then(() => {
+            setError("Password Changed!")
+            window.location.reload(false)
+          }
+          )
           .catch((e) => setError(e.message))
       )
       .catch((e) => setError(e.message));
   };
 
-  if (!user && !loading) useRouter().push("/login");
   return (
     <Layout noCategories>
       <AccountSidebar />
@@ -187,6 +191,7 @@ export default function AccountPage() {
                 <Input
                   name="currentPassword"
                   register={register2}
+                  type="password"
                   placeholder="Current Password"
                   noMargin
                 />
@@ -195,6 +200,7 @@ export default function AccountPage() {
                 <span>New Password</span>
                 <Input
                   name="newPassword"
+                  type="password"
                   register={register2}
                   placeholder="New Password"
                   noMargin
@@ -209,6 +215,7 @@ export default function AccountPage() {
                 <span>Confirm New Password</span>
                 <Input
                   name="confirmPassword"
+                  type="password"
                   register={register2}
                   placeholder="Confirm New Password"
                   noMargin

@@ -99,6 +99,10 @@
         font-size: 14px;
         flex-wrap: wrap;
       }
+      :focus {
+        outline: none;
+        border-bottom: 2px solid black;
+      }
     }
 
     .searchIcon {

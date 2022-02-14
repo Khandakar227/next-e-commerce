@@ -1,3 +1,4 @@
+import nProgress from "nprogress";
 import { firebase, auth, db } from "../config/firebase";
 
 function updateUser({ email, name, surname, phoneNumber, photo, finalEvent }) {
@@ -45,15 +46,16 @@ function updatePassword({ currentPassword, newPassword }) {
     currentPassword
   );
 
-  const update = () => {
-    return currentUser
-      .updatePassword(newPassword)
-      .then(function () {
-        // Update successful.
-      })
-      .catch(function (error) {
-        // An error happened.
-      });
+  const update = async () => {
+    try {
+      nProgress.start()
+      await currentUser
+        .updatePassword(newPassword);
+    } catch (error) {
+      console.log(error)
+    } finally {
+      nProgress.done()
+    }
   };
 
   const reauth = () => {

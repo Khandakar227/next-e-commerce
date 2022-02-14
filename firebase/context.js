@@ -1,11 +1,13 @@
-import React, { useState, useEffect, useContext, createContext } from "react";
-import { firebase, auth, db } from "../config/firebase";
+import { useState, useEffect, useContext, createContext } from "react";
+import { auth, db } from "../config/firebase";
 
 const authContext = createContext();
 export function AuthProvider({ children }) {
-  const auth = useProvideAuth();
-  return <authContext.Provider value={auth}>{children}</authContext.Provider>;
+  const authData = useProvideAuth();
+
+  return <authContext.Provider value={authData}>{children}</authContext.Provider>;
 }
+
 export const useAuth = () => {
   console.log("useAuth");
   return useContext(authContext);
@@ -14,37 +16,38 @@ function useProvideAuth() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const getCurrentUser = () => {
-    auth.currentUser?.uid
-      ? db
-        .collection("Users")
-        .doc(auth.currentUser.uid)
-        .get()
-        .then((doc) => {
-          const userData = {
-            emailVerified: auth.currentUser.emailVerified,
-            uid: auth.currentUser.uid,
-            ...doc.data()
-          }
+  const getCurrentUser = async () => {
+    try {
+      if (!auth.currentUser?.uid) return;
 
-          Object.defineProperty(userData, 'emailVerified', {
-            value: auth.currentUser.emailVerified
-          })
-          Object.defineProperty(userData, 'uid', {
-            value: auth.currentUser.uid
-          })
-
-          setUser(userData);
-          setLoading(false);
-        })
-      : setLoading(false);
+      const doc = await db.collection("Users").doc(auth.currentUser?.uid).get();
+      const userData = {
+        emailVerified: auth.currentUser.emailVerified,
+        uid: auth.currentUser?.uid,
+        ...doc.data(),
+      }
+      Object.defineProperty(userData, 'emailVerified', { //Making a logged in user object with immutable properties.
+        value: auth.currentUser.emailVerified,
+        writable: false
+      })
+      Object.defineProperty(userData, 'uid', { //Making a logged in user object with immutable properties.
+        value: auth.currentUser.uid,
+        writable: false
+      })
+      setUser(userData);
+      console.log(userData)
+    } catch (error) {
+      console.log(error)
+      setLoading(false);
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
-    const unsubscribe = firebase
-      .auth()
-      .onAuthStateChanged(() => getCurrentUser());
-    return () => unsubscribe();
+    const unsubscribe = auth.onAuthStateChanged(async () => await getCurrentUser());
+
+    return unsubscribe
   }, []);
 
   return {

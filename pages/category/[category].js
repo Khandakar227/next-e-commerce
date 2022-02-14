@@ -48,7 +48,7 @@ export default function Category({ data, query }) {
           </div>
           <div className={styles.products}>
             {!loading &&
-              data.map((product) => {
+              data?.map((product) => {
                 return (
                   <ProductCard
                     key={product.id}
@@ -70,20 +70,18 @@ export default function Category({ data, query }) {
 }
 
 Category.getInitialProps = async function ({ query }) {
-  let data = {};
+  let data = [];
   let error = {};
-
-  await db
-    .collection("Products")
-    .where("category", "==", query.category.toLowerCase())
-    .get()
-    .then(function (querySnapshot) {
-      const products = querySnapshot.docs.map(function (doc) {
-        return { id: doc.id, ...doc.data() };
+  try {
+    const querySnapshot = await db.collection("Products").where("category", "==", query.category.toLowerCase()).get();
+    if (querySnapshot) {
+      querySnapshot.docs.forEach(function (doc) {
+        data.push({ id: doc.id, ...doc.data() });
       });
-      data = products;
-    })
-    .catch((e) => (error = e));
+    }
+  } catch (e) {
+    error = e
+  }
 
   return {
     data,

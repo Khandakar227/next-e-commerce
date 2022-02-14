@@ -10,8 +10,9 @@ const useAddresses = () => {
     async function fetchFromFirestore() {
       try {
         if (!auth.currentUser) return //If not logged in return null
-        const query = db.collection('Addresses').where('user_id', '==', auth.currentUser.uid);   //Make firebase query
-        const { docs } = await query.get();  //Telling firebase to look from the cache first
+        //Make firebase query
+        const query = db.collection('Addresses').where('user_id', '==', auth.currentUser.uid);
+        const { docs } = await query.get();
         const data = docs.map((doc) => ({ ...doc.data(), id: doc.id }));  // get the address with data and doc id 
         setData(data);
       } catch (error) {
